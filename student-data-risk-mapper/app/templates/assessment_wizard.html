@@ -1,0 +1,613 @@
+{% extends "base.html" %}
+
+{% block title %}Assess {{ system.name }} - Student Data Risk Mapper{% endblock %}
+
+{% block head %}
+<script>
+// Autosave to localStorage
+const STORAGE_KEY = 'sdrm_wizard_{{ system.id }}';
+
+function saveProgress() {
+    const form = document.getElementById('wizard-form');
+    const formData = new FormData(form);
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+        if (data[key]) {
+            if (!Array.isArray(data[key])) {
+                data[key] = [data[key]];
+            }
+            data[key].push(value);
+        } else {
+            data[key] = value;
+        }
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadProgress() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+
+    try {
+        const data = JSON.parse(saved);
+        for (let [key, value] of Object.entries(data)) {
+            const elements = document.querySelectorAll(`[name="${key}"]`);
+            elements.forEach(el => {
+                if (el.type === 'checkbox') {
+                    const values = Array.isArray(value) ? value : [value];
+                    el.checked = values.includes(el.value);
+                } else if (el.type === 'radio') {
+                    el.checked = (el.value === value);
+                } else {
+                    el.value = value;
+                }
+            });
+        }
+    } catch (e) {
+        console.error('Failed to load saved progress:', e);
+    }
+}
+
+function clearProgress() {
+    localStorage.removeItem(STORAGE_KEY);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadProgress();
+
+    // Save on any input change
+    document.getElementById('wizard-form').addEventListener('change', saveProgress);
+
+    // Clear on successful submit
+    document.getElementById('wizard-form').addEventListener('submit', () => {
+        clearProgress();
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="wizard-page">
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="/">Dashboard</a> &raquo;
+            <a href="/systems/{{ system.id }}">{{ system.name }}</a> &raquo;
+            Risk Assessment
+        </div>
+    </div>
+
+    <h1>Risk Assessment: {{ system.name }}</h1>
+
+    <!-- Progress Steps -->
+    <div class="wizard-progress">
+        {% for s in range(1, 7) %}
+        <div class="progress-step {% if s == step %}active{% elif s < step %}completed{% endif %}">
+            <span class="step-number">{{ s }}</span>
+            <span class="step-label">
+                {% if s == 1 %}Basics
+                {% elif s == 2 %}Data Types
+                {% elif s == 3 %}Storage
+                {% elif s == 4 %}Security
+                {% elif s == 5 %}Sharing
+                {% elif s == 6 %}Integrations
+                {% endif %}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <form id="wizard-form" method="post" action="/assessments/wizard/{{ system.id }}/submit"
+          class="wizard-form">
+
+        <!-- Step 1: Basics (already collected, show summary) -->
+        <div class="wizard-step {% if step == 1 %}active{% endif %}" data-step="1">
+            <h2>Step 1: System Basics</h2>
+            <p class="step-intro">Review the system information below. Click Continue to proceed with the assessment.</p>
+
+            <div class="review-info">
+                <div class="info-row">
+                    <span class="info-label">System Name:</span>
+                    <span class="info-value">{{ system.name }}</span>
+                </div>
+                {% if system.vendor %}
+                <div class="info-row">
+                    <span class="info-label">Vendor:</span>
+                    <span class="info-value">{{ system.vendor }}</span>
+                </div>
+                {% endif %}
+                <div class="info-row">
+                    <span class="info-label">Purpose:</span>
+                    <span class="info-value">{{ system.purpose_category.value }}</span>
+                </div>
+                {% if system.owner_department %}
+                <div class="info-row">
+                    <span class="info-label">Owner:</span>
+                    <span class="info-value">{{ system.owner_department }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <p class="edit-link">
+                <a href="/systems/{{ system.id }}/edit">Edit system details</a>
+            </p>
+        </div>
+
+        <!-- Step 2: Data Types -->
+        <div class="wizard-step {% if step == 2 %}active{% endif %}" data-step="2">
+            <h2>Step 2: Student Data Types Collected</h2>
+            <p class="step-intro">
+                Select all types of student data this system collects, stores, or processes.
+                <strong>Check "Unknown" if you're not sure</strong> — this will be flagged for follow-up.
+            </p>
+
+            <div class="checkbox-group">
+                <label class="checkbox-label unknown-option">
+                    <input type="checkbox" name="data_types_unknown" value="1">
+                    <span class="checkmark"></span>
+                    <span class="label-text">Unknown / Not sure what data is collected</span>
+                </label>
+            </div>
+
+            <hr>
+
+            <div class="checkbox-grid">
+                {% for key, label in data_types.items() %}
+                <label class="checkbox-label">
+                    <input type="checkbox" name="data_types" value="{{ key }}">
+                    <span class="checkmark"></span>
+                    <span class="label-text">{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <div class="definitions">
+                <h4>Definitions</h4>
+                <dl>
+                    <dt>IEP/504</dt>
+                    <dd>Individualized Education Program or Section 504 accommodation plans</dd>
+                    <dt>Behavioral/SEL</dt>
+                    <dd>Social-emotional learning assessments, behavior observations, or intervention data</dd>
+                    <dt>Biometrics</dt>
+                    <dd>Fingerprints, facial recognition, voice prints, or other biological identifiers</dd>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Step 3: Storage and Processing -->
+        <div class="wizard-step {% if step == 3 %}active{% endif %}" data-step="3">
+            <h2>Step 3: Storage and Processing</h2>
+            <p class="step-intro">Where and how is student data stored and processed?</p>
+
+            <div class="form-group">
+                <label>Where is data stored?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="storage_location" value="vendor_cloud">
+                        <span>Vendor's cloud only</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="storage_location" value="district">
+                        <span>District-hosted only</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="storage_location" value="both">
+                        <span>Both vendor and district</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="storage_location" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Data processing region?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="data_region" value="us_only">
+                        <span>US only</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="data_region" value="eu">
+                        <span>EU / EEA</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="data_region" value="global">
+                        <span>Global / Multiple regions</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="data_region" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Are subprocessors (third-party services used by the vendor) disclosed?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="subprocessors_disclosed" value="yes">
+                        <span>Yes, list is available</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="subprocessors_disclosed" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="subprocessors_disclosed" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Is a data retention policy stated?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="retention_policy_stated" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="retention_policy_stated" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="retention_policy_stated" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>How can data be deleted?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="deletion_process" value="self_serve">
+                        <span>Self-service (admin can delete directly)</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="deletion_process" value="support_ticket">
+                        <span>Support ticket required</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="deletion_process" value="no">
+                        <span>No deletion option</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="deletion_process" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Access and Security -->
+        <div class="wizard-step {% if step == 4 %}active{% endif %}" data-step="4">
+            <h2>Step 4: Access and Security Controls</h2>
+            <p class="step-intro">What security controls does this system provide?</p>
+
+            <div class="form-group">
+                <label>Single Sign-On (SSO) supported?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="sso_supported" value="entra">
+                        <span>Yes - Microsoft Entra ID</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="sso_supported" value="google">
+                        <span>Yes - Google</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="sso_supported" value="other">
+                        <span>Yes - Other provider</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="sso_supported" value="none">
+                        <span>No SSO available</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="sso_supported" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Multi-factor authentication (MFA) available for admin accounts?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="mfa_available" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="mfa_available" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="mfa_available" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Role-based access controls (RBAC)?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="rbac_available" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="rbac_available" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="rbac_available" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Data encrypted in transit (HTTPS)?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="encryption_transit" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="encryption_transit" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="encryption_transit" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Data encrypted at rest?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="encryption_rest" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="encryption_rest" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="encryption_rest" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Audit logs available to district admins?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="audit_logs_available" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="audit_logs_available" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="audit_logs_available" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Sharing and Secondary Use -->
+        <div class="wizard-step {% if step == 5 %}active{% endif %}" data-step="5">
+            <h2>Step 5: Data Sharing and Secondary Use</h2>
+            <p class="step-intro">How does the vendor use and share student data beyond the primary service?</p>
+
+            <div class="form-group">
+                <label>Is data shared with third parties (beyond subprocessors)?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="third_party_sharing" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="third_party_sharing" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="third_party_sharing" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Is data used for advertising or marketing?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="used_for_advertising" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="used_for_advertising" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="used_for_advertising" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Is data used to train AI/machine learning models?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="used_for_ai_training" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="used_for_ai_training" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="used_for_ai_training" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Is data sold or monetized?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="data_sold" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="data_sold" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="data_sold" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Integrations -->
+        <div class="wizard-step {% if step == 6 %}active{% endif %}" data-step="6">
+            <h2>Step 6: Integrations and Blast Radius</h2>
+            <p class="step-intro">
+                What systems does this integrate with? Integration complexity affects potential impact if compromised.
+            </p>
+
+            <div class="form-group">
+                <label>Integration types used (select all that apply):</label>
+                <div class="checkbox-grid compact">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="integration_types" value="sis">
+                        <span class="checkmark"></span>
+                        <span class="label-text">SIS (Student Information System)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="integration_types" value="lms">
+                        <span class="checkmark"></span>
+                        <span class="label-text">LMS (Learning Management System)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="integration_types" value="sso">
+                        <span class="checkmark"></span>
+                        <span class="label-text">SSO / Identity Provider</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="integration_types" value="oneroster">
+                        <span class="checkmark"></span>
+                        <span class="label-text">OneRoster</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="integration_types" value="api">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Custom API</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="integration_types" value="csv_upload">
+                        <span class="checkmark"></span>
+                        <span class="label-text">CSV / Manual upload</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Primary integration method:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="integration_method" value="oauth">
+                        <span>OAuth / OIDC (token-based)</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="integration_method" value="api_key">
+                        <span>API key / Secret token</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="integration_method" value="csv_manual">
+                        <span>CSV / Manual data transfer</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="integration_method" value="unknown" checked>
+                        <span>Unknown / Not applicable</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Data sync frequency:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="integration_frequency" value="realtime">
+                        <span>Real-time</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="integration_frequency" value="nightly">
+                        <span>Nightly batch</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="integration_frequency" value="adhoc">
+                        <span>Ad-hoc / Manual</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="integration_frequency" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Does this system write data back to the SIS?</label>
+                <div class="radio-group horizontal">
+                    <label class="radio-label">
+                        <input type="radio" name="sis_writeback" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="sis_writeback" value="no">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="sis_writeback" value="unknown" checked>
+                        <span>Unknown</span>
+                    </label>
+                </div>
+                <small class="field-help">
+                    SIS writeback increases risk because the system can modify authoritative student records.
+                </small>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="wizard-nav">
+            {% if step > 1 %}
+            <a href="/assessments/wizard/{{ system.id }}?step={{ step - 1 }}"
+               class="btn btn-secondary">Previous</a>
+            {% else %}
+            <span></span>
+            {% endif %}
+
+            {% if step < 6 %}
+            <a href="/assessments/wizard/{{ system.id }}?step={{ step + 1 }}"
+               class="btn btn-primary">Continue</a>
+            {% else %}
+            <button type="submit" class="btn btn-primary btn-lg">
+                Complete Assessment
+            </button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

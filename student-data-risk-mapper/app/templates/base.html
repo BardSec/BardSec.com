@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Data Risk Mapper{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <span class="logo-icon">&#128737;</span>
+                Student Data Risk Mapper
+            </a>
+            {% if user %}
+            <nav class="nav">
+                <a href="/" class="nav-link">Dashboard</a>
+                <a href="/heatmap" class="nav-link">Heatmap</a>
+                <a href="/high-risk" class="nav-link">High Risk</a>
+                <a href="/systems/new" class="nav-link btn-primary">+ Add System</a>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">{{ user.display_name }}</span>
+                <span class="user-role badge badge-{{ user.role.value }}">{{ user.role.value }}</span>
+                <a href="/auth/logout" class="logout-link">Sign Out</a>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Student Data Risk Mapper. For authorized district use only.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}{{ system.name }} - Student Data Risk Mapper{% endblock %}
+
+{% block content %}
+<div class="system-detail">
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="/">Dashboard</a> &raquo; {{ system.name }}
+        </div>
+        <div class="header-actions">
+            <a href="/systems/{{ system.id }}/edit" class="btn btn-secondary">Edit System</a>
+            {% if assessment %}
+            <a href="/exports/pdf/{{ system.id }}" class="btn btn-secondary">Download PDF</a>
+            <a href="/assessments/wizard/{{ system.id }}" class="btn btn-primary">Reassess</a>
+            {% else %}
+            <a href="/assessments/wizard/{{ system.id }}" class="btn btn-primary">Start Assessment</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <h1>{{ system.name }}</h1>
+
+    <div class="system-meta">
+        {% if system.vendor %}
+        <span class="meta-item"><strong>Vendor:</strong> {{ system.vendor }}</span>
+        {% endif %}
+        <span class="meta-item"><strong>Category:</strong> {{ system.purpose_category.value }}</span>
+        {% if system.owner_department %}
+        <span class="meta-item"><strong>Owner:</strong> {{ system.owner_department }}</span>
+        {% endif %}
+        {% if system.owner_contact %}
+        <span class="meta-item"><strong>Contact:</strong> {{ system.owner_contact }}</span>
+        {% endif %}
+    </div>
+
+    {% if system.notes %}
+    <div class="system-notes">
+        <strong>Notes:</strong> {{ system.notes }}
+    </div>
+    {% endif %}
+
+    {% if assessment %}
+    <!-- Data Nutrition Label -->
+    <div class="nutrition-label">
+        <div class="nutrition-header">
+            <h2>Data Privacy Label</h2>
+            <div class="risk-badge tier-{{ assessment.risk_tier.value|lower }}">
+                <span class="score">{{ assessment.score_total }}</span>
+                <span class="tier">{{ assessment.risk_tier.value }} Risk</span>
+            </div>
+        </div>
+
+        <div class="nutrition-grid">
+            <!-- Score Breakdown -->
+            <div class="nutrition-section">
+                <h3>Risk Score Breakdown</h3>
+                <div class="score-bars">
+                    {% set breakdown = assessment.score_breakdown_json %}
+                    <div class="score-bar">
+                        <span class="bar-label">Data Sensitivity</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ (breakdown.sensitivity / 30 * 100)|int }}%"></div>
+                        </div>
+                        <span class="bar-value">{{ breakdown.sensitivity }}/30</span>
+                    </div>
+                    <div class="score-bar">
+                        <span class="bar-label">Exposure Risk</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ (breakdown.exposure / 25 * 100)|int }}%"></div>
+                        </div>
+                        <span class="bar-value">{{ breakdown.exposure }}/25</span>
+                    </div>
+                    <div class="score-bar">
+                        <span class="bar-label">Security Controls</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ (breakdown.security_controls / 20 * 100)|int }}%"></div>
+                        </div>
+                        <span class="bar-value">{{ breakdown.security_controls }}/20</span>
+                    </div>
+                    <div class="score-bar">
+                        <span class="bar-label">Vendor Posture</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ (breakdown.vendor_posture / 15 * 100)|int }}%"></div>
+                        </div>
+                        <span class="bar-value">{{ breakdown.vendor_posture }}/15</span>
+                    </div>
+                    <div class="score-bar">
+                        <span class="bar-label">Integration Risk</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ (breakdown.integration_blast_radius / 10 * 100)|int }}%"></div>
+                        </div>
+                        <span class="bar-value">{{ breakdown.integration_blast_radius }}/10</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Types -->
+            <div class="nutrition-section">
+                <h3>Student Data Collected</h3>
+                {% set answers = assessment.answers_json %}
+                {% set data_types = answers.get('data_types', []) %}
+                {% if answers.get('data_types_unknown') %}
+                <p class="unknown-note">Data types collected are unknown.</p>
+                {% elif data_types %}
+                <ul class="data-type-list">
+                    {% if 'directory_info' in data_types %}
+                    <li>Directory info (name, grade, ID)</li>
+                    {% endif %}
+                    {% if 'contact_info' in data_types %}
+                    <li>Contact info</li>
+                    {% endif %}
+                    {% if 'academic_records' in data_types %}
+                    <li>Academic records/grades</li>
+                    {% endif %}
+                    {% if 'attendance_discipline' in data_types %}
+                    <li>Attendance/discipline</li>
+                    {% endif %}
+                    {% if 'iep_504' in data_types %}
+                    <li class="sensitive">IEP/504 data</li>
+                    {% endif %}
+                    {% if 'health' in data_types %}
+                    <li class="sensitive">Health data</li>
+                    {% endif %}
+                    {% if 'behavioral_sel' in data_types %}
+                    <li class="sensitive">Behavioral/SEL data</li>
+                    {% endif %}
+                    {% if 'biometrics' in data_types %}
+                    <li class="sensitive">Biometric data</li>
+                    {% endif %}
+                    {% if 'precise_location' in data_types %}
+                    <li class="sensitive">Location tracking</li>
+                    {% endif %}
+                    {% if 'photos_video_audio' in data_types %}
+                    <li>Photos/video/audio</li>
+                    {% endif %}
+                    {% if 'staff_notes' in data_types %}
+                    <li>Staff notes</li>
+                    {% endif %}
+                    {% if 'auth_identifiers' in data_types %}
+                    <li>Auth identifiers</li>
+                    {% endif %}
+                    {% if 'device_identifiers' in data_types %}
+                    <li>Device identifiers</li>
+                    {% endif %}
+                </ul>
+                {% else %}
+                <p class="no-data">No student data types specified.</p>
+                {% endif %}
+            </div>
+
+            <!-- Storage & Security -->
+            <div class="nutrition-section">
+                <h3>Storage & Security</h3>
+                <table class="info-table">
+                    <tr>
+                        <td>Storage Location</td>
+                        <td>{{ answers.get('storage_location', 'Unknown')|replace('_', ' ')|title }}</td>
+                    </tr>
+                    <tr>
+                        <td>Data Region</td>
+                        <td>{{ answers.get('data_region', 'Unknown')|replace('_', ' ')|title }}</td>
+                    </tr>
+                    <tr>
+                        <td>SSO</td>
+                        <td>{{ answers.get('sso_supported', 'Unknown')|replace('_', ' ')|title }}</td>
+                    </tr>
+                    <tr>
+                        <td>MFA</td>
+                        <td>{{ answers.get('mfa_available', 'Unknown')|title }}</td>
+                    </tr>
+                    <tr>
+                        <td>Encryption (Transit)</td>
+                        <td>{{ answers.get('encryption_transit', 'Unknown')|title }}</td>
+                    </tr>
+                    <tr>
+                        <td>Encryption (Rest)</td>
+                        <td>{{ answers.get('encryption_rest', 'Unknown')|title }}</td>
+                    </tr>
+                    <tr>
+                        <td>Audit Logs</td>
+                        <td>{{ answers.get('audit_logs_available', 'Unknown')|title }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Sharing -->
+            <div class="nutrition-section">
+                <h3>Data Sharing & Use</h3>
+                <table class="info-table">
+                    <tr>
+                        <td>Third-Party Sharing</td>
+                        <td class="{% if answers.get('third_party_sharing') == 'yes' %}warning{% endif %}">
+                            {{ answers.get('third_party_sharing', 'Unknown')|title }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Advertising Use</td>
+                        <td class="{% if answers.get('used_for_advertising') == 'yes' %}warning{% endif %}">
+                            {{ answers.get('used_for_advertising', 'Unknown')|title }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>AI Training</td>
+                        <td class="{% if answers.get('used_for_ai_training') == 'yes' %}warning{% endif %}">
+                            {{ answers.get('used_for_ai_training', 'Unknown')|title }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Data Sold</td>
+                        <td class="{% if answers.get('data_sold') == 'yes' %}danger{% endif %}">
+                            {{ answers.get('data_sold', 'Unknown')|title }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reason Codes -->
+        <div class="reason-codes">
+            <h3>Key Risk Factors</h3>
+            {% set reasons = assessment.reason_codes_json[:5] %}
+            {% if reasons %}
+            <ul class="reason-list">
+                {% for reason in reasons %}
+                <li>
+                    <span class="reason-code">{{ reason.code }}</span>
+                    <span class="reason-text">{{ reason.explanation }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No significant risk factors identified.</p>
+            {% endif %}
+        </div>
+
+        <div class="assessment-meta">
+            <small>
+                Assessed on {{ assessment.assessed_at.strftime('%Y-%m-%d') }}
+            </small>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-assessment">
+        <h2>No Assessment Yet</h2>
+        <p>This system has not been assessed for privacy risk.</p>
+        <a href="/assessments/wizard/{{ system.id }}" class="btn btn-primary btn-lg">
+            Start Risk Assessment
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Delete System -->
+    <div class="danger-zone">
+        <h3>Danger Zone</h3>
+        <form action="/systems/{{ system.id }}/delete" method="post"
+              onsubmit="return confirm('Are you sure you want to delete this system? This cannot be undone.');">
+            <button type="submit" class="btn btn-danger">Delete System</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

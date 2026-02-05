@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://riskmapper:riskmapper_secret@db:5432/riskmapper
+      - DATABASE_URL_SYNC=postgresql://riskmapper:riskmapper_secret@db:5432/riskmapper
+      - SECRET_KEY=${SECRET_KEY}
+      - ENTRA_CLIENT_ID=${ENTRA_CLIENT_ID}
+      - ENTRA_CLIENT_SECRET=${ENTRA_CLIENT_SECRET}
+      - ENTRA_TENANT_ID=${ENTRA_TENANT_ID}
+      - ENTRA_ADMIN_GROUP_ID=${ENTRA_ADMIN_GROUP_ID:-}
+      - ENTRA_AUDITOR_GROUP_ID=${ENTRA_AUDITOR_GROUP_ID:-}
+      - BASE_URL=${BASE_URL:-http://localhost:8000}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app:/app/app:ro
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=riskmapper
+      - POSTGRES_PASSWORD=riskmapper_secret
+      - POSTGRES_DB=riskmapper
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U riskmapper -d riskmapper"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # For running migrations
+  migrate:
+    build: .
+    command: alembic upgrade head
+    environment:
+      - DATABASE_URL_SYNC=postgresql://riskmapper:riskmapper_secret@db:5432/riskmapper
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - migrate
+
+volumes:
+  postgres_data:
