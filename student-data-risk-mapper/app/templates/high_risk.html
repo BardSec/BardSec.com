@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}High Risk Systems - Student Data Risk Mapper{% endblock %}
+
+{% block content %}
+<div class="high-risk-page">
+    <div class="page-header">
+        <h1>High Risk Systems</h1>
+        <p class="page-subtitle">
+            Systems classified as High or Critical risk requiring attention.
+        </p>
+    </div>
+
+    {% if systems %}
+    <div class="alert alert-warning">
+        <strong>{{ systems|length }} system{{ 's' if systems|length != 1 else '' }}</strong>
+        identified with elevated privacy risk.
+    </div>
+
+    <div class="risk-list">
+        {% for system in systems %}
+        {% set assessment = system.current_assessment %}
+        <div class="risk-card tier-{{ assessment.risk_tier.value|lower }}">
+            <div class="risk-card-header">
+                <h2>
+                    <a href="/systems/{{ system.id }}">{{ system.name }}</a>
+                </h2>
+                <div class="risk-score">
+                    <span class="score">{{ assessment.score_total }}</span>
+                    <span class="tier badge badge-tier tier-{{ assessment.risk_tier.value|lower }}">
+                        {{ assessment.risk_tier.value }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="risk-card-body">
+                <div class="meta-info">
+                    {% if system.vendor %}
+                    <span><strong>Vendor:</strong> {{ system.vendor }}</span>
+                    {% endif %}
+                    <span><strong>Category:</strong> {{ system.purpose_category.value }}</span>
+                    {% if system.owner_department %}
+                    <span><strong>Owner:</strong> {{ system.owner_department }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="top-risks">
+                    <h4>Top Risk Factors:</h4>
+                    <ul>
+                        {% for reason in assessment.reason_codes_json[:3] %}
+                        <li>
+                            <span class="reason-code">{{ reason.code }}</span>
+                            {{ reason.explanation }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="risk-card-actions">
+                <a href="/systems/{{ system.id }}" class="btn btn-secondary">View Details</a>
+                <a href="/assessments/wizard/{{ system.id }}" class="btn btn-primary">Reassess</a>
+                <a href="/exports/pdf/{{ system.id }}" class="btn btn-outline">Download PDF</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state-card">
+        <h2>No High Risk Systems</h2>
+        <p>
+            Great news! No systems are currently classified as High or Critical risk.
+        </p>
+        <p>
+            Continue monitoring your inventory and reassess systems regularly as
+            vendor practices may change.
+        </p>
+        <a href="/" class="btn btn-primary">Return to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Sensitive Data Heatmap - Student Data Risk Mapper{% endblock %}
+
+{% block content %}
+<div class="heatmap-page">
+    <div class="page-header">
+        <h1>Sensitive Data Heatmap</h1>
+        <p class="page-subtitle">
+            Visual overview of which systems handle highly sensitive student data types.
+        </p>
+    </div>
+
+    <div class="heatmap-legend">
+        <span class="legend-item">
+            <span class="cell-sample has-data"></span> Collects this data
+        </span>
+        <span class="legend-item">
+            <span class="cell-sample no-data"></span> Does not collect
+        </span>
+        <span class="legend-item">
+            <span class="cell-sample unknown"></span> Not assessed
+        </span>
+    </div>
+
+    <div class="table-container">
+        <table class="heatmap-table">
+            <thead>
+                <tr>
+                    <th class="system-col">System</th>
+                    {% for type_key, type_label in sensitive_types %}
+                    <th class="data-col">{{ type_label }}</th>
+                    {% endfor %}
+                    <th class="score-col">Risk Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in heatmap_data %}
+                <tr>
+                    <td class="system-name">
+                        <a href="/systems/{{ row.system.id }}">{{ row.system.name }}</a>
+                    </td>
+                    {% if row.has_assessment %}
+                        {% for type_key, type_label in sensitive_types %}
+                        <td class="heatmap-cell {% if row.data_types.get(type_key) %}has-data{% else %}no-data{% endif %}">
+                            {% if row.data_types.get(type_key) %}
+                            <span class="cell-indicator" title="{{ type_label }}">&#10003;</span>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                        <td class="score-cell">
+                            {% set assessment = row.system.current_assessment %}
+                            <span class="score-badge tier-{{ assessment.risk_tier.value|lower }}">
+                                {{ assessment.score_total }}
+                            </span>
+                        </td>
+                    {% else %}
+                        {% for _ in sensitive_types %}
+                        <td class="heatmap-cell unknown">
+                            <span class="cell-indicator">?</span>
+                        </td>
+                        {% endfor %}
+                        <td class="score-cell">
+                            <a href="/assessments/wizard/{{ row.system.id }}" class="btn btn-small">
+                                Assess
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="{{ sensitive_types|length + 2 }}" class="empty-state">
+                        No systems in inventory. <a href="/systems/new">Add your first system</a>.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="heatmap-notes">
+        <h3>About Sensitive Data Types</h3>
+        <dl>
+            <dt>IEP/504</dt>
+            <dd>Special education plans protected under IDEA and FERPA. Requires heightened security.</dd>
+
+            <dt>Health</dt>
+            <dd>Medical conditions, medications, allergies. May be subject to HIPAA in addition to FERPA.</dd>
+
+            <dt>Behavioral/SEL</dt>
+            <dd>Social-emotional assessments, behavior observations. Can be stigmatizing if disclosed.</dd>
+
+            <dt>Biometrics</dt>
+            <dd>Fingerprints, facial recognition. Many states require explicit consent for collection.</dd>
+
+            <dt>Location</dt>
+            <dd>Precise GPS tracking of students. Raises safety and privacy concerns.</dd>
+
+            <dt>Discipline</dt>
+            <dd>Suspension, expulsion, incident records. Protected under FERPA with restrictions.</dd>
+        </dl>
+    </div>
+</div>
+{% endblock %}
