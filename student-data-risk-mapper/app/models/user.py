@@ -12,9 +12,9 @@ from app.database import Base
 
 class UserRole(str, enum.Enum):
     """User roles for authorization."""
-    USER = "user"
-    ADMIN = "admin"
-    AUDITOR = "auditor"
+    user = "user"
+    admin = "admin"
+    auditor = "auditor"
 
 
 class User(Base):
@@ -32,7 +32,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), index=True)
     display_name: Mapped[str] = mapped_column(String(255))
     role: Mapped[UserRole] = mapped_column(
-        SQLEnum(UserRole), default=UserRole.USER
+        SQLEnum(UserRole), default=UserRole.user
     )
 
     # Timestamps
@@ -46,12 +46,12 @@ class User(Base):
 
     def is_admin(self) -> bool:
         """Check if user has admin role."""
-        return self.role == UserRole.ADMIN
+        return self.role == UserRole.admin
 
     def is_auditor(self) -> bool:
         """Check if user has auditor role."""
-        return self.role == UserRole.AUDITOR
+        return self.role == UserRole.auditor
 
     def can_export_csv(self) -> bool:
         """Check if user can export full CSV (admin only)."""
-        return self.role == UserRole.ADMIN
+        return self.role == UserRole.admin

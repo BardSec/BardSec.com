@@ -85,7 +85,7 @@ async def export_systems_csv(
         return RedirectResponse(url="/auth/login", status_code=302)
 
     # Check admin permission
-    if user.role != UserRole.ADMIN:
+    if user.role != UserRole.admin:
         raise HTTPException(
             status_code=403,
             detail="CSV export requires admin access"

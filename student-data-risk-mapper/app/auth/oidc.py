@@ -35,10 +35,10 @@ oauth.register(
 def determine_role_from_groups(groups: list[str]) -> UserRole:
     """Determine user role based on Entra group membership."""
     if settings.entra_admin_group_id and settings.entra_admin_group_id in groups:
-        return UserRole.ADMIN
+        return UserRole.admin
     if settings.entra_auditor_group_id and settings.entra_auditor_group_id in groups:
-        return UserRole.AUDITOR
-    return UserRole.USER
+        return UserRole.auditor
+    return UserRole.user
 
 
 async def get_or_create_user(
@@ -116,7 +116,7 @@ def require_admin(func: Callable) -> Callable:
             if request.headers.get("accept", "").startswith("text/html"):
                 return RedirectResponse(url="/auth/login", status_code=302)
             raise HTTPException(status_code=401, detail="Not authenticated")
-        if user.role != UserRole.ADMIN:
+        if user.role != UserRole.admin:
             raise HTTPException(status_code=403, detail="Admin access required")
         return await func(request, *args, **kwargs)
     return wrapper
