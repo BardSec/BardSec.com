@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import get_settings
@@ -81,7 +81,7 @@ async def not_found_handler(request: Request, exc):
             {"request": request, "error": "Page not found", "status_code": 404},
             status_code=404
         )
-    return {"detail": "Not found"}
+    return JSONResponse(status_code=404, content={"detail": "Not found"})
 
 
 @app.exception_handler(500)
@@ -93,4 +93,4 @@ async def server_error_handler(request: Request, exc):
             {"request": request, "error": "Internal server error", "status_code": 500},
             status_code=500
         )
-    return {"detail": "Internal server error"}
+    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
