@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BardSec | Cybersecurity Consulting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #060912;
+      --panel: rgba(12, 16, 28, 0.82);
+      --panel-strong: rgba(16, 22, 38, 0.94);
+      --stroke: rgba(255, 255, 255, 0.08);
+      --text: #e9f3ff;
+      --muted: #9ab2d3;
+      --accent: #6ef3c5;
+      --accent-2: #60a5fa;
+      --warn: #f59e0b;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: radial-gradient(120% 120% at 12% 18%, rgba(110, 243, 197, 0.18), transparent 35%),
+                  radial-gradient(90% 90% at 80% 12%, rgba(96, 165, 250, 0.22), transparent 38%),
+                  radial-gradient(70% 70% at 65% 78%, rgba(245, 158, 11, 0.22), transparent 40%),
+                  var(--ink);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 0 18px 72px;
+      scroll-behavior: smooth;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(6, 9, 18, 0.72);
+      border-bottom: 1px solid var(--stroke);
+    }
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 6px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(140deg, rgba(110, 243, 197, 0.3), rgba(96, 165, 250, 0.5));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #03101d;
+      text-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 18px;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    nav a:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+    .hero {
+      max-width: 1200px;
+      margin: 42px auto 28px;
+      padding: 36px 28px 32px;
+      background: linear-gradient(125deg, rgba(255, 255, 255, 0.04), rgba(96, 165, 250, 0.09));
+      border: 1px solid var(--stroke);
+      border-radius: calc(var(--radius) + 4px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(35% 60% at 82% 28%, rgba(110, 243, 197, 0.18), transparent 60%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 880px; }
+    .hero-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-logo {
+      width: 76px;
+      height: 76px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(140deg, rgba(110, 243, 197, 0.35), rgba(96, 165, 250, 0.45));
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+      object-fit: cover;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(110, 243, 197, 0.14);
+      color: #d4fff1;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    .eyebrow::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 6px rgba(110, 243, 197, 0.2);
+    }
+    .tagline-punch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #cfe4ff;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      font-size: 13px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    h1 {
+      font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 16px 0 12px;
+      font-size: clamp(34px, 5vw, 48px);
+      letter-spacing: -0.4px;
+    }
+    .lede {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 720px;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      border: 1px solid transparent;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .pill.primary {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      color: #032018;
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 16px 48px rgba(96, 165, 250, 0.35);
+    }
+    .pill.primary:hover { transform: translateY(-2px); }
+    .pill.ghost { border-color: var(--stroke); }
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      min-height: 260px;
+      background: radial-gradient(120% 120% at 20% 10%, rgba(110, 243, 197, 0.18), transparent 45%),
+                  radial-gradient(120% 120% at 80% 90%, rgba(96, 165, 250, 0.26), transparent 48%),
+                  rgba(8, 12, 22, 0.55);
+      border: 1px solid var(--stroke);
+      border-radius: calc(var(--radius) + 6px);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .visual-inner {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      background: linear-gradient(140deg, rgba(255, 255, 255, 0.04), rgba(12, 16, 28, 0.4));
+    }
+    .visual-label {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(110, 243, 197, 0.14);
+      color: #d4fff1;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .section {
+      max-width: 1200px;
+      margin: 44px auto;
+      padding: 4px 6px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+    .section-header h2 {
+      margin: 0;
+      font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+      letter-spacing: -0.2px;
+    }
+    .section-header p { margin: 0; color: var(--muted); font-size: 14px; }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 16px 16px 18px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover { transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.14); box-shadow: 0 26px 60px rgba(0, 0, 0, 0.45); }
+    .card h3 { margin: 6px 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .link-card {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      height: 100%;
+    }
+    .link-card .card-title { margin: 6px 0 8px; font-size: 17px; }
+    .card-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: calc(var(--radius) - 4px);
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 12px;
+      border: 1px solid var(--stroke);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .card-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(6, 9, 18, 0) 40%, rgba(6, 9, 18, 0.32));
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .list {
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .list li {
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow);
+      align-items: center;
+    }
+    .list strong { font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif; }
+    .tagline { color: var(--muted); font-size: 14px; }
+    .videos {
+      background: var(--panel-strong);
+      border: 1px solid var(--stroke);
+      border-radius: calc(var(--radius) + 2px);
+      padding: 18px 16px 22px;
+      box-shadow: var(--shadow);
+    }
+    .video-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+      position: relative;
+    }
+    .thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.25s ease, filter 0.25s ease;
+    }
+    .video-card:hover .thumb { transform: scale(1.02); filter: saturate(1.1); }
+    .video-meta { padding: 0 14px 14px; }
+    .video-meta h4 { margin: 6px 0 6px; font-size: 16px; }
+    .video-meta p { margin: 0; color: var(--muted); font-size: 14px; }
+    footer {
+      max-width: 1200px;
+      margin: 32px auto;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+    @media (max-width: 700px) {
+      nav a { margin-left: 10px; }
+      .hero { padding: 28px 20px; }
+      .section { margin: 36px auto; }
+    }
+    @media (max-width: 900px) {
+      .hero-layout { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a class="brand" href="#top">
+      <img class="hero-logo" src="assets/weblogo.png" alt="BardSec logo">
+        <span>BardSec&nbsp; • Cybersecurity Evangelist</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="#projects">Projects</a>
+        <a href="#articles">Articles</a>
+   	    <a href="#presentations">Presentations</a>
+        <a href="#videos">Videos</a>
+		<a href="#shop">Books & Merch</a>
+        <a href="#experience">Experience</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-layout">
+        <div class="hero-content">
+          <div class="hero-header">
+            <div>
+              <div class="eyebrow">BardSec | LomBARDo Security</div>
+              <div class="tagline-punch">Educator / Writer / Contributor / Speaker / Advisor</div>
+            </div>
+          </div>
+          <h1 id="hero-title">Technology &amp; Cybersecurity evangelism, training, consultation, and content creation with an EDU flavor.&nbsp;  &nbsp;&nbsp;</h1>
+          <p class="lede"> I'm a cybersecurity and technology leader with more than a decade of experience securing K–12 environments at scale, one of the most constrained and human-dependent operating environments in existence. As a former classroom teacher turned Director of Technology, I have led cloud transformations, built security programs from the ground up, and responded to real-world incidents where technical decisions carried human, legal, and political consequences.</p>
+          <p class="lede">While I'm happy in my current role as a K12 tech director, I would be open to discuss opportunities to apply my experience more broadly as a Field CISO or Principal Security Strategist, or on a limited basis through fractional leadership or project-based initiatives.&nbsp; </p>
+          <div class="hero-actions">
+            <a class="pill primary" href="/cdn-cgi/l/email-protection#7b1a151f023b191a091f081e1855181416">Start a Conversation</a>
+            <!-- <a class="pill ghost" href="#services">See how I help</a> -->
+            
+          </div>
+        </div>
+       <div class="hero-visual">
+      <img src="https://bardsec.com/assets/big.png" alt="Bard!" style="width: 100%; height: 100%; object-fit: cover; border-radius: calc(var(--radius) + 6px);">
+    </div>
+  </div>
+    </section>
+<!--
+    <section class="section" id="services" aria-labelledby="services-title">
+      <div class="section-header">
+        <h2 id="services-title">What I help people DO&nbsp;</h2>
+        <p>Consulting, Content Creation, Fractional Leadership &amp; Advisory Services&nbsp;&nbsp;</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <span class="chip">K12</span>
+          <h3>Build security programs from the ground up</h3>
+          <p>For districts that know they need to improve security but don’t know where to start, I help establish standards-aligned baselines&nbsp; &nbsp; &nbsp; without overwhelming staff or budgets.</p>
+        </div>
+        <div class="card">
+          <span class="chip">K12&nbsp;</span>
+          <h3>Make smart decisions before buying expensive tools</h3>
+          <p>Many organizations overspend on platforms while basic cyber hygiene remains weak. I help leaders understand what actually reduces risk first and what can wait.</p>
+        </div>
+        <div class="card">
+          <span class="chip">K12&nbsp;</span>
+          <h3>Human Risk / Security Awareness</h3>
+          <p>I help organizations design and run security awareness programs that go beyond compliance training to actually influence daily behavior.</p>
+        </div>
+        <div class="card">
+          <span class="chip">Solution Providers</span>
+          <h3>Help EdTech providers understand K12 markets</h3>
+          <p>I help education-focused SaaS companies and value-added resellers understand how schools evaluate risk, privacy, and security long before a contract is signed.</p>
+        </div>
+        <div class="card">
+          <span class="chip">Solution Providers</span>
+          <h3>Develop curriculum, documentation, or other content</h3>
+          <p>I create materials that translate complex technical and security concepts into guidance educators, leaders, and staff can actually use.</p>
+        </div>
+        <div class="card">
+          <span class="chip">Solution Providers</span>
+          <h3>Bridge the gap between schools and vendors</h3>
+          <p>I work at the intersection of districts and SaaS providers, helping teams translate technical and security concepts into language that resonates with educators, IT leaders, and administrators.</p>
+        </div>
+      </div>
+    </section>
+
+    -->
+
+    <section class="section" id="projects" aria-labelledby="projects-title">
+      <div class="section-header">
+        <h2 id="projects-title">Projects</h2>
+        <p>Hobbies and Projects.</p>
+      </div>
+      <div class="grid">
+        		   <div class="card">
+          <a class="link-card" href="https://www.edtechirl.com/" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/assets/edtechirlthumb.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Writing</span>
+            <h3 class="card-title">EdTechIRL.com</h3>
+            <p>As an educator, I've always been hardwired to share the things I've learned. This blog has been my primary vehicle for doing so for the past few years.</p>
+          </a>
+        </div>
+		  <div class="card">
+          <a class="link-card" href="https://https://k12cc.com" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/assets/k12ccthumb.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Compliance</span>
+            <h3 class="card-title">K12 Cyber Collab</h3>
+            <p>Curious what cyber mandates apply to K12 in your state? Check here! (Note: This is still very much in draft mode, so I'm open to feedback on usefulness and accuracy!)</p>
+          </a>
+        </div>
+        <div class="card">
+          <a class="link-card" href="https://chromewebstore.google.com/detail/temppad/jbglcnffnngmhlljadagjadifjmdgkoe" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/temppad/temppad-ss.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Code</span>
+            <h3 class="card-title">TempPad Chrome Extension</h3>
+            <p>A temporary in-browser notepad with word count, dark mode, and export. Persists until browser restart.</p>
+          </a>
+        </div>
+        <div class="card">
+          <a class="link-card" href="https://chromewebstore.google.com/detail/temppad/jbglcnffnngmhlljadagjadifjmdgkoe" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/recordkeeper/ss.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Code</span>
+            <h3 class="card-title">RecordKeeper Chrome Extension</h3>
+            <p>Display DNS records (A, AAAA, MX, TXT, NS, CNAME, SOA, SPF, DMARC, DKIM) for the currently visited domain.</p>
+          </a>
+        </div>
+
+		   <div class="card">
+          <a class="link-card" href="https://chromewebstore.google.com/detail/temppad/jbglcnffnngmhlljadagjadifjmdgkoe" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/filtertrace/ss.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Code</span>
+            <h3 class="card-title">FilterTrace Chrome Extension</h3>
+            <p>Monitor all background network requests. Perfect for troubleshooting content filters and analyzing website resource loading.</p>
+          </a>
+        </div>
+      
+		
+		   <div class="card">
+          <a class="link-card" href="https://zerobreachpodcast.com/" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/assets/zbz.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Media</span>
+            <h3 class="card-title">Zero Breach Zone Podcast</h3>
+            <p>Hosts Andy Lombardo and Phil Hintz lead insightful conversations with top experts in cybersecurity, education, and technology, uncovering strategies to protect our schools.</p>
+          </a>
+        </div>
+     
+		
+		</div>
+    </section>
+		
+	
+	
+    <section class="section" id="articles" aria-labelledby="articles-title">
+      <div class="section-header">
+        <h2 id="articles-title">Articles</h2>
+        <p>Recent writing from <a href="https://edtechirl.com" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">edtechirl.com</a>.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <a class="link-card" href="https://www.edtechirl.com/p/just-technology" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://substackcdn.com/image/fetch/$s_!tK3n!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa17fc4e7-e57a-4cf0-9430-f4dc822121aa_1024x1024.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">opinion</span>
+            <h3 class="card-title">"Just" Technology</h3>
+            <p>What do I wish stakeholders knew about technology in schools?</p>
+          </a>
+        </div>
+        <div class="card">
+          <a class="link-card" href="https://www.edtechirl.com/p/why-is-phish-resistant-mfa-important" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://substackcdn.com/image/fetch/$s_!a6oA!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fbd34315e-8d5f-4740-9200-4899f660df5a_1024x1024.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Identity</span>
+            <h3 class="card-title">Why is Phish-Resistant MFA Important? or, How I Learned to Bypass MFA</h3>
+            <p>A practical look at how attackers defeat MFA and what phish-resistant MFA does differently.</p>
+          </a>
+        </div>
+        <div class="card">
+          <a class="link-card" href="https://www.edtechirl.com/p/demystifying-tabletop-exercises" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://substackcdn.com/image/fetch/$s_!Deeh!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1e02a869-cb79-4eb2-8a5e-aeef4a742962_1536x1024.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Pedagogy</span>
+            <h3 class="card-title">Rethinking 1:1 Computing in K12</h3>
+            <p>A look at how device choice can shape pedagogy.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+	
+	<section class="section" id="presentations" aria-labelledby="articles-title">
+      <div class="section-header">
+        <h2 id="articles-title">Presentations</h2>
+        <p>Available from  <a href="https://edtechirl.com" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">edtechirl.com</a>.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <a class="link-card" href="https://www.edtechirl.com/p/fetc-2026-deep-fake-ai-and-beyond" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://substackcdn.com/image/fetch/$s_!WAFG!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa4c82155-9269-4a07-a8b1-41846028bfd1_1376x768.jpeg?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">AI</span>
+            <h3 class="card-title">Deepfakes, AI, and Beyond</h3>
+            <p>This session will explore the rapidly evolving landscape of AI-generated media, the rise of deepfakes, and the implications for cybersecurity, misinformation, and public trust. We'll cover how these technologies work, who's using them (for both good and bad), and the tools available for detection and mitigation.</p>
+          </a>
+        </div>
+        <div class="card">
+          <a class="link-card" href="https://www.edtechirl.com/p/bsides-knoxville-malicious-links" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://substackcdn.com/image/fetch/$s_!RXLE!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2dd3c78a-ab6e-45b5-bcb6-3593dc7cfe28_1652x928.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Cybersecurity</span>
+            <h3 class="card-title">Malicious Links and Student Hackers</h3>
+            <p>This presentation covers significant cyber threats facing educational institutions. Schools are prime targets due to their valuable data, lack of stringent regulations, and ownership of robust infrastructure that can be used to launch additional attacks from.</p>
+          </a>
+        </div>
+        <div class="card">
+          <a class="link-card" href="https://www.edtechirl.com/p/maryville-college-ai-seminar-presentation-24d" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://substackcdn.com/image/fetch/$s_!9kVQ!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F59f405c2-a9c2-42fd-9407-4fecc51c8aa5_1644x920.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Instructional</span>
+            <h3 class="card-title">AI-Powered Lesson Planning</h3>
+            <p>Are you excited about AI’s potential in the classroom but unsure where to start? Or are you skeptical about whether AI can truly enhance your teaching experience? In this hands-on session, we’ll explore three real-world use cases, starting with state standards across different subjects and grade levels.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+		
+ <section class="section" id="videos" aria-labelledby="videos-title">
+      <div class="section-header">
+        <h2 id="videos-title">Recent videos</h2>
+        <p>Quick hits from the BardSec YouTube channel.</p>
+      </div>
+      <div class="videos">
+        <div class="grid">
+          <a class="video-card" href="https://youtu.be/-hjhHFnW4tA" target="_blank" rel="noopener noreferrer">
+            <div class="thumb" style="background-image: url('https://img.youtube.com/vi/-hjhHFnW4tA/hqdefault.jpg');"></div>
+            <div class="video-meta">
+              <h4>ImprovMX</h4>
+              <p>Receive email at your custom domain for free.</p>
+            </div>
+          </a>
+          <a class="video-card" href="https://youtu.be/2gCk0Z9T6Ko" target="_blank" rel="noopener noreferrer">
+            <div class="thumb" style="background-image: url('https://img.youtube.com/vi/2gCk0Z9T6Ko/hqdefault.jpg');"></div>
+            <div class="video-meta">
+              <h4>Stealing Cookies with EvilGinx</h4>
+              <p>As close as I get to spreading FUD.</p>
+            </div>
+          </a>
+          <a class="video-card" href="https://youtu.be/wIJiPVJeBTg" target="_blank" rel="noopener noreferrer">
+            <div class="thumb" style="background-image: url('https://img.youtube.com/vi/wIJiPVJeBTg/hqdefault.jpg');"></div>
+            <div class="video-meta">
+              <h4>Real K-12 Cyber Attacks</h4>
+              <p>Malicious Links, Student Hackers, and a Handful of Solutions (BSides Knoxville 2025)</p>
+            </div>
+          </a>
+          <a class="video-card" href="https://youtu.be/JHcxyizx3mc" target="_blank" rel="noopener noreferrer">
+            <div class="thumb" style="background-image: url('https://img.youtube.com/vi/JHcxyizx3mc/hqdefault.jpg');"></div>
+            <div class="video-meta">
+              <h4>Zero Breach Zone Podcast Trailer</h4>
+              <p>See what it's all about!</p>
+            </div>
+          </a>
+			<a class="video-card" href="https://youtu.be/lC0DAFMLWic" target="_blank" rel="noopener noreferrer">
+            <div class="thumb" style="background-image: url('https://img.youtube.com/vi/lC0DAFMLWic/hqdefault.jpg');"></div>
+            <div class="video-meta">
+              <h4>Zero Breach Zone: Ep. 17</h4>
+              <p>FETC, VR & Cybersecurity: What’s Next for K–12 Tech? with Jennifer Womble</p>
+            </div>
+          </a>
+			<a class="video-card" href="https://youtu.be/laFAHrdHkDs" target="_blank" rel="noopener noreferrer">
+            <div class="thumb" style="background-image: url('https://img.youtube.com/vi/laFAHrdHkDs/hqdefault.jpg');"></div>
+            <div class="video-meta">
+              <h4>Zero Breack Zone: Ep. 07</h4>
+              <p>From NASA to K-12: Revolutionizing School Cybersecurity with Frankie Jackson</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+		
+		<section class="section" id="shop" aria-labelledby="shop-title">
+      <div class="section-header">
+        <h2 id="shop-title">Books &amp; Merch</h2>
+        <p>Words, words, words.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <a class="link-card" href="https://example.com/bardsec-handbook" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/assets/cyberhy1st.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">NonFiction</span>
+            <h3 class="card-title">Cyber Hygiene First: Keeping K12 Clean on a Budget
+				&nbsp;</h3>
+            <p>Coming Soon! Written for K–12 leaders, Cyber Hygiene focuses on identity, endpoints, training, and strategy that schools can implement without blowing their budgets.</p>
+          </a>
+        </div>
+        <div class="card">
+          <a class="link-card" href="https://example.com/zero-trust" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/assets/redteam.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Fiction</span>
+            <h3 class="card-title">Red Team 6</h3>
+            <p>Coming Soon!&nbsp;Red Team 6 follows a teenage hacker as she pulls on a thread that leads far beyond her school, and into something much bigger.</p>
+          </a>
+        </div>
+        <div class="card">
+          <a class="link-card" href="https://www.redbubble.com/people/BardSec/shop" target="_blank" rel="noopener noreferrer">
+            <div class="card-thumb" style="background-image: url('https://bardsec.com/assets/merchthumb.png?auto=format&fit=crop&w=1200&q=80');"></div>
+            <span class="chip">Merch</span>
+            <h3 class="card-title">Hack the Narrative merch</h3>
+            <p>Hats, hoodies, and stickers for your IR team and security champions.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+	
+	
+ 
+		
+		<section class="section" id="experience" aria-labelledby="experience-title">
+      <div class="section-header">
+        <h2 id="experience-title">Experience</h2>
+        <p>Hands-on operator with leadership range.</p>
+      </div>
+      <ul class="list">
+        <li>
+          <div>
+            <strong>20+ years serving K12 schools</strong>
+            <div class="tagline">
+              <p>I’ve spent my career at the intersection of technology, security, and education.&nbsp;</p>
+              <p>That means I’ve seen what happens when well-intentioned security advice collides with real classrooms, limited staffing, aging infrastructure, and political pressure.&nbsp;</p>
+              <p>I believe cybersecurity should be boring in the best possible way. Predictable. Understandable. Grounded in fundamentals.&nbsp;</p>
+              <p>My work focuses on helping organizations improve security maturity through governance, risk management, and human-centered controls, not chasing the latest threat headline or vendor promise.&nbsp;</p>
+              <p>When security is done well, it fades into the background and lets people do their jobs safely. </p>
+            </div>
+          </div>
+          
+        </li>
+        <li>
+          <div>
+            <strong>4+ years&nbsp; advising companies that schools depend on</strong>
+            <div class="tagline">
+              <p>I’ve worked with SaaS companies selling into the K–12 market, helping them navigate the realities of how schools evaluate, adopt, and trust technology.&nbsp;</p>
+              <p>This work focuses on route to market rather than product engineering. I advise teams on the unique operational, regulatory, and cultural constraints schools face, and how those realities should shape messaging, content, and engagement.&nbsp;</p>
+              <p>That includes developing security and privacy narratives that resonate with district leaders, creating educational content for non-technical audiences, and leading webinars that help schools understand risk without feeling sold to.&nbsp;</p>
+              <p>Because I’ve spent years inside K–12 environments, I help companies avoid common missteps. Overpromising. Using enterprise language that doesn’t translate. Treating security as a feature instead of a shared responsibility.&nbsp;</p>
+              <p>The goal is not faster sales. It’s more durable relationships built on clarity, credibility, and respect for how schools actually operate.</p>
+             
+            </div>
+          </div>
+          
+        </li>
+        <li>
+          <div>
+            <strong>Education &amp; Credentials&nbsp; &nbsp;&nbsp;</strong>
+            <div class="tagline">
+              <p>Graduate training in both cyber security and education, supported by CISSP, CISM, CCSP, CETL, and advanced CompTIA certifications across security, cloud, and infrastructure.</p>
+            </div>
+          </div>
+         
+		  </li>
+          
+          </div>
+        </li>
+      </ul>
+    </section>
+		
+  </main>
+
+  <footer>
+    © BardSec / EdTechIRL
+  </footer>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7add7def97a342f2875a25842c788233","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7add7def97a342f2875a25842c788233","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7add7def97a342f2875a25842c788233","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7add7def97a342f2875a25842c788233","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7add7def97a342f2875a25842c788233","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+
+
+
