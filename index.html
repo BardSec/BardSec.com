@@ -547,7 +547,7 @@
 
     async function loadContent() {
       try {
-        const res = await fetch('/data/content.json');
+        const res = await fetch('/api/content');
         if (!res.ok) throw new Error('Failed to load content');
         const data = await res.json();
 
