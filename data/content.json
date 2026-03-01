@@ -1,0 +1,182 @@
+{
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "EdTechIRL.com",
+      "chip": "Writing",
+      "description": "As an educator, I've always been hardwired to share the things I've learned. This blog has been my primary vehicle for doing so for the past few years.",
+      "link": "https://www.edtechirl.com/",
+      "image": "https://bardsec.com/assets/edtechirlthumb.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "proj-2",
+      "title": "K12 Cyber Collab",
+      "chip": "Compliance",
+      "description": "Curious what cyber mandates apply to K12 in your state? Check here! (Note: This is still very much in draft mode, so I'm open to feedback on usefulness and accuracy!)",
+      "link": "https://k12cc.com",
+      "image": "https://bardsec.com/assets/k12ccthumb.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "proj-3",
+      "title": "TempPad Chrome Extension",
+      "chip": "Code",
+      "description": "A temporary in-browser notepad with word count, dark mode, and export. Persists until browser restart.",
+      "link": "https://chromewebstore.google.com/detail/temppad/jbglcnffnngmhlljadagjadifjmdgkoe",
+      "image": "https://bardsec.com/temppad/temppad-ss.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "proj-4",
+      "title": "RecordKeeper Chrome Extension",
+      "chip": "Code",
+      "description": "Display DNS records (A, AAAA, MX, TXT, NS, CNAME, SOA, SPF, DMARC, DKIM) for the currently visited domain.",
+      "link": "https://chromewebstore.google.com/detail/recordkeeper/cdfnmlfpanmjnongcmjoeciifmhkcmek",
+      "image": "https://bardsec.com/recordkeeper/ss.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "proj-5",
+      "title": "FilterTrace Chrome Extension",
+      "chip": "Code",
+      "description": "Monitor all background network requests. Perfect for troubleshooting content filters and analyzing website resource loading.",
+      "link": "https://chromewebstore.google.com/detail/filter-trace/nehcoangnnddhgbnjnfhelmnpbcghgeg",
+      "image": "https://bardsec.com/filtertrace/ss.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "proj-6",
+      "title": "WebLoad Troubleshooter Chrome Extension",
+      "chip": "Code",
+      "description": "Diagnose page load issues caused by content filters, blocked scripts, CSP violations, and failed dependencies — right in DevTools.",
+      "link": "https://chromewebstore.google.com/detail/filter-trace/nehcoangnnddhgbnjnfhelmnpbcghgeg",
+      "image": "https://bardsec.com/webload/ss.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "proj-7",
+      "title": "Zero Breach Zone Podcast",
+      "chip": "Media",
+      "description": "Hosts Andy Lombardo and Phil Hintz lead insightful conversations with top experts in cybersecurity, education, and technology, uncovering strategies to protect our schools.",
+      "link": "https://zerobreachpodcast.com/",
+      "image": "https://bardsec.com/assets/zbz.png?auto=format&fit=crop&w=1200&q=80"
+    }
+  ],
+  "articles": [
+    {
+      "id": "art-1",
+      "title": "\"Just\" Technology",
+      "chip": "Opinion",
+      "description": "What do I wish stakeholders knew about technology in schools?",
+      "link": "https://www.edtechirl.com/p/just-technology",
+      "image": "https://substackcdn.com/image/fetch/$s_!tK3n!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa17fc4e7-e57a-4cf0-9430-f4dc822121aa_1024x1024.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "art-2",
+      "title": "Why is Phish-Resistant MFA Important? or, How I Learned to Bypass MFA",
+      "chip": "Identity",
+      "description": "A practical look at how attackers defeat MFA and what phish-resistant MFA does differently.",
+      "link": "https://www.edtechirl.com/p/why-is-phish-resistant-mfa-important",
+      "image": "https://substackcdn.com/image/fetch/$s_!a6oA!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fbd34315e-8d5f-4740-9200-4899f660df5a_1024x1024.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "art-3",
+      "title": "Rethinking 1:1 Computing in K12",
+      "chip": "Pedagogy",
+      "description": "A look at how device choice can shape pedagogy.",
+      "link": "https://www.edtechirl.com/p/demystifying-tabletop-exercises",
+      "image": "https://substackcdn.com/image/fetch/$s_!Deeh!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1e02a869-cb79-4eb2-8a5e-aeef4a742962_1536x1024.png?auto=format&fit=crop&w=1200&q=80"
+    }
+  ],
+  "presentations": [
+    {
+      "id": "pres-1",
+      "title": "Deepfakes, AI, and Beyond",
+      "chip": "AI",
+      "description": "This session will explore the rapidly evolving landscape of AI-generated media, the rise of deepfakes, and the implications for cybersecurity, misinformation, and public trust. We'll cover how these technologies work, who's using them (for both good and bad), and the tools available for detection and mitigation.",
+      "link": "https://www.edtechirl.com/p/fetc-2026-deep-fake-ai-and-beyond",
+      "image": "https://substackcdn.com/image/fetch/$s_!WAFG!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa4c82155-9269-4a07-a8b1-41846028bfd1_1376x768.jpeg?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "pres-2",
+      "title": "Malicious Links and Student Hackers",
+      "chip": "Cybersecurity",
+      "description": "This presentation covers significant cyber threats facing educational institutions. Schools are prime targets due to their valuable data, lack of stringent regulations, and ownership of robust infrastructure that can be used to launch additional attacks from.",
+      "link": "https://www.edtechirl.com/p/bsides-knoxville-malicious-links",
+      "image": "https://substackcdn.com/image/fetch/$s_!RXLE!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2dd3c78a-ab6e-45b5-bcb6-3593dc7cfe28_1652x928.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "pres-3",
+      "title": "AI-Powered Lesson Planning",
+      "chip": "Instructional",
+      "description": "Are you excited about AI's potential in the classroom but unsure where to start? Or are you skeptical about whether AI can truly enhance your teaching experience? In this hands-on session, we'll explore three real-world use cases, starting with state standards across different subjects and grade levels.",
+      "link": "https://www.edtechirl.com/p/maryville-college-ai-seminar-presentation-24d",
+      "image": "https://substackcdn.com/image/fetch/$s_!9kVQ!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F59f405c2-a9c2-42fd-9407-4fecc51c8aa5_1644x920.png?auto=format&fit=crop&w=1200&q=80"
+    }
+  ],
+  "videos": [
+    {
+      "id": "vid-1",
+      "title": "ImprovMX",
+      "description": "Receive email at your custom domain for free.",
+      "youtubeId": "-hjhHFnW4tA",
+      "link": "https://youtu.be/-hjhHFnW4tA"
+    },
+    {
+      "id": "vid-2",
+      "title": "Stealing Cookies with EvilGinx",
+      "description": "As close as I get to spreading FUD.",
+      "youtubeId": "2gCk0Z9T6Ko",
+      "link": "https://youtu.be/2gCk0Z9T6Ko"
+    },
+    {
+      "id": "vid-3",
+      "title": "Real K-12 Cyber Attacks",
+      "description": "Malicious Links, Student Hackers, and a Handful of Solutions (BSides Knoxville 2025)",
+      "youtubeId": "wIJiPVJeBTg",
+      "link": "https://youtu.be/wIJiPVJeBTg"
+    },
+    {
+      "id": "vid-4",
+      "title": "Zero Breach Zone Podcast Trailer",
+      "description": "See what it's all about!",
+      "youtubeId": "JHcxyizx3mc",
+      "link": "https://youtu.be/JHcxyizx3mc"
+    },
+    {
+      "id": "vid-5",
+      "title": "Zero Breach Zone: Ep. 17",
+      "description": "FETC, VR & Cybersecurity: What's Next for K–12 Tech? with Jennifer Womble",
+      "youtubeId": "lC0DAFMLWic",
+      "link": "https://youtu.be/lC0DAFMLWic"
+    },
+    {
+      "id": "vid-6",
+      "title": "Zero Breach Zone: Ep. 07",
+      "description": "From NASA to K-12: Revolutionizing School Cybersecurity with Frankie Jackson",
+      "youtubeId": "laFAHrdHkDs",
+      "link": "https://youtu.be/laFAHrdHkDs"
+    }
+  ],
+  "shop": [
+    {
+      "id": "shop-1",
+      "title": "Cyber Hygiene First: Keeping K12 Clean on a Budget",
+      "chip": "NonFiction",
+      "description": "Coming Soon! Written for K–12 leaders, Cyber Hygiene focuses on identity, endpoints, training, and strategy that schools can implement without blowing their budgets.",
+      "link": "https://example.com/bardsec-handbook",
+      "image": "https://bardsec.com/assets/cyberhy1st.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "shop-2",
+      "title": "Red Team 6",
+      "chip": "Fiction",
+      "description": "Coming Soon! Red Team 6 follows a teenage hacker as she pulls on a thread that leads far beyond her school, and into something much bigger.",
+      "link": "https://example.com/zero-trust",
+      "image": "https://bardsec.com/assets/redteam.png?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "shop-3",
+      "title": "Hack the Narrative merch",
+      "chip": "Merch",
+      "description": "Hats, hoodies, and stickers for your IR team and security champions.",
+      "link": "https://www.redbubble.com/people/BardSec/shop",
+      "image": "https://bardsec.com/assets/merchthumb.png?auto=format&fit=crop&w=1200&q=80"
+    }
+  ]
+}
