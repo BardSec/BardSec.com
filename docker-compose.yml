@@ -2,5 +2,9 @@ services:
   web:
     build: .
     ports:
-      - "8080:80"
+      - "${PORT:-34343}:${PORT:-34343}"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
     restart: unless-stopped
